@@ -32,6 +32,11 @@
 .menu button:hover{background:rgba(124,252,154,.18)}.menu hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:4px 0}
 .off{position:absolute;inset:0;z-index:6;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .off.on{display:flex}.off button{border:1px solid #3c6;background:#0b2;color:#fff;border-radius:999px;padding:8px 16px;cursor:pointer}
+.sleep{position:absolute;inset:0;z-index:7;background:radial-gradient(circle at 50% 40%,#1a2744 0,#070b14 70%);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#cde}
+.sleep.on{display:flex}.sleep .zzz{letter-spacing:3px;opacity:.8;animation:zzz 2.2s ease-in-out infinite}
+.sleep button{border:1px solid #7cfc9a;background:#1e8e3e;color:#fff;border-radius:999px;padding:10px 18px;cursor:pointer;font-size:.95rem}
+@keyframes zzz{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-5px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.sleep .zzz{animation:none}}
 </style></head><body>
 <div class="desk">
   <div class="screen">
@@ -49,12 +54,26 @@
       <button data-m="web">🌐 Navegador</button><button data-m="term">🖥️ Terminal</button><button data-m="code">💻 Código</button>
       <hr><button data-m="reboot">🔄 Reiniciar</button><button data-m="off">⏻ Apagar</button></div>
     <div class="off" data-off><div style="font-size:36px">🐍</div><div>Snake OS Lite está apagado</div><button data-on>⏻ Encender</button></div>
+    <div class="sleep" data-sleep>
+      <svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="58" rx="18" ry="4" fill="rgba(0,0,0,.35)"/><path d="M32 8L52 18L32 28L12 18Z" fill="#a9a6f5"/><path d="M12 18L32 28V52L12 42Z" fill="#8b88e0"/><path d="M32 28L52 18V42L32 52Z" fill="#6e6bc4"/><rect x="22" y="33" width="6" height="2.2" rx="1.1" fill="#fff"/><rect x="36" y="33" width="6" height="2.2" rx="1.1" fill="#fff"/></svg>
+      <div class="zzz">Z z z</div>
+      <div style="font-weight:600;font-size:1rem">La computadora está dormida</div>
+      <button data-wake>☀️ Despertar</button>
+    </div>
   </div>
   <div class="dock"><button data-start title="Inicio">🐍</button><button data-app="web" class="on">🌐 Navegador</button><button data-app="term">🖥️ Terminal</button><button data-app="code">💻 Código</button><span class="clk" data-clk></span></div>
 </div>
 <script>
 (function(){
-  var TOK='', page=document.querySelector('[data-page]'), q=document.querySelector('[data-q]'), menu=document.querySelector('[data-menu]'), off=document.querySelector('[data-off]');
+  var TOK='', page=document.querySelector('[data-page]'), q=document.querySelector('[data-q]'), menu=document.querySelector('[data-menu]'), off=document.querySelector('[data-off]'), sleepEl=document.querySelector('[data-sleep]');
+  var IDLE_MS=150000, idleT=null;
+  function wake(){ sleepEl.classList.remove('on'); bumpIdle(); }
+  function goSleep(){ if(off.classList.contains('on')||sleepEl.classList.contains('on'))return; sleepEl.classList.add('on'); menu.classList.remove('on'); }
+  function bumpIdle(){ clearTimeout(idleT); if(sleepEl.classList.contains('on')||off.classList.contains('on'))return; idleT=setTimeout(goSleep, IDLE_MS); }
+  ['pointerdown','keydown','wheel','touchstart','mousemove'].forEach(function(ev){ document.querySelector('.desk').addEventListener(ev, function(){ if(sleepEl.classList.contains('on'))return; bumpIdle(); }, {passive:true, capture:true}); });
+  sleepEl.querySelector('[data-wake]').onclick=function(e){ e.stopPropagation(); wake(); };
+  sleepEl.onclick=function(e){ if(e.target===sleepEl) wake(); };
+  bumpIdle();
   var frame=null, frameMode='', hist=[];
   function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function tick(){document.querySelector('[data-clk]').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
