@@ -1,4 +1,4 @@
-"""Snake OS Lite — mini escritorio web con Doganiero Search (sin cuentas)."""
+"""Snake OS Lite — mini escritorio web con Doganiero Search (con login @dogaemail.com)."""
 from __future__ import annotations
 import base64, hashlib, hmac, html as _html, ipaddress, json, os, re, secrets, socket, time, threading
 from concurrent.futures import ThreadPoolExecutor
@@ -7,9 +7,10 @@ from typing import Any
 from urllib.parse import parse_qs, quote, unquote, urlencode, urljoin, urlparse
 from urllib.request import HTTPHandler, HTTPSHandler, HTTPRedirectHandler, Request as _UReq, build_opener
 
-from fastapi import FastAPI, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from auth_lite import COOKIE_NAME, end_session, get_user_by_email, start_session, user_from_session, verify_password
 
 FETCH_TIMEOUT = 10
 MAX_PAGE_BYTES = 2 * 1024 * 1024
@@ -255,11 +256,40 @@ def _proxy_error(origin: str, msg: str, url: str) -> str:
 
 app = FastAPI(title="Snake OS Lite")
 
+
+def require_user(request: Request):
+    user = user_from_session(request.cookies.get(COOKIE_NAME))
+    if not user:
+        raise HTTPException(401, "No autenticado")
+    return user
+
+@app.post("/api/login")
+def login_ep(body: dict, response: Response):
+    email = str((body or {}).get("email") or "").strip().lower()
+    password = str((body or {}).get("password") or "")
+    if not email.endswith("@dogaemail.com"):
+        raise HTTPException(400, "Usa tu correo @dogaemail.com")
+    user = get_user_by_email(email)
+    if not user or not verify_password(password, user["password_hash"]):
+        raise HTTPException(401, "Correo o contraseña incorrectos")
+    sid = start_session(int(user["id"]))
+    response.set_cookie(COOKIE_NAME, sid, httponly=True, samesite="lax", max_age=60*60*24*30, path="/")
+    return {"ok": True, "name": user["name"], "email": user["email"]}
+
+@app.post("/api/logout")
+def logout_ep(request: Request, response: Response):
+    end_session(request.cookies.get(COOKIE_NAME))
+    response.delete_cookie(COOKIE_NAME, path="/")
+    return {"ok": True}
+
+@app.get("/api/me")
+def me_ep(user=Depends(require_user)):
+    return {"id": int(user["id"]), "name": user["name"], "email": user["email"]}
+
 @app.post("/api/token")
-def token_ep(request: Request):
-    ip = (request.client.host if request.client else "anon")[:64]
-    sid = "v" + hashlib.sha256((ip + "|lite").encode()).hexdigest()[:16]  # sin guardar la IP
-    return {"t": proxy_token(sid), "ttl": PROXY_TOKEN_TTL}
+def token_ep(user=Depends(require_user)):
+    return {"t": proxy_token("u" + str(int(user["id"]))), "ttl": PROXY_TOKEN_TTL}
+
 
 @app.get("/api/serp")
 def serp_ep(request: Request, q: str = Query("", max_length=200), p: int = Query(1, ge=1, le=10), t: str = Query("", max_length=200)):
@@ -295,7 +325,7 @@ def proxy_ep(request: Request, u: str = Query("", max_length=3000), t: str = Que
         return _resp(_proxy_error(origin, str(exc), u), 200)
 
 @app.get("/api/frame-check")
-def frame_check(u: str = Query("", max_length=2000)):
+def frame_check(u: str = Query("", max_length=2000), user=Depends(require_user)):
     try:
         _check_host(u)
         req = _UReq(u, method="GET", headers={"User-Agent": "Mozilla/5.0 (SnakeOS Lite)", "Accept": "text/html"})

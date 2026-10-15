@@ -1,15 +1,22 @@
 # Snake OS Lite
 
-Mini escritorio web con **Doganiero Search**, Terminal y editor de Código (JS/Python aislado).
+Mini escritorio web con **Doganiero Search**. Login obligatorio con cuentas existentes `@dogaemail.com` (misma base que Snake OS VP, montada en solo lectura).
 
-- Inicio local: `docker compose up -d --build web` → http://127.0.0.1:8990
-- Dominio previsto: `snake-os-lite.softportweb.com` (túnel Cloudflare; ver `.env.example`)
-- Sin cuentas ni cookies de usuario. El proxy de páginas no reenvía cookies y tiene protección SSRF.
-- Cursor: puntero del sistema (sin cursor personalizado de Snake OS).
+## Local
 
-## Cloudflare
+```bash
+cp .env.example .env   # TUNNEL_TOKEN opcional
+docker compose up -d --build
+# http://127.0.0.1:8990
+```
 
-1. Zero Trust → Networks → Tunnels → Create a tunnel.
-2. Public hostname: `snake-os-lite.softportweb.com` → service `http://web:8000`.
-3. Copia el token en `.env` como `TUNNEL_TOKEN=...` (no lo subas a git).
-4. `docker compose up -d`.
+## Dominio público
+
+Hostname previsto: `snake-os-lite.softportweb.com`
+
+1. Crear túnel Cloudflare y poner `TUNNEL_TOKEN=...` en `.env`
+2. `docker compose up -d`
+
+## GitHub
+
+Repo previsto: `Snake-os335/snake-os-lite` (hay que crear el repo vacío en GitHub y luego `git push -u origin main`).

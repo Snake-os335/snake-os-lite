@@ -31,14 +31,32 @@
 .menu button{display:flex;width:100%;align-items:center;gap:8px;border:0;background:transparent;color:#fff;padding:8px 10px;border-radius:9px;cursor:pointer;text-align:left;font-size:.85rem}
 .menu button:hover{background:rgba(124,252,154,.18)}.menu hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:4px 0}
 .off{position:absolute;inset:0;z-index:6;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px}
-.off.on{display:flex}.off button{border:1px solid #3c6;background:#0b2;color:#fff;border-radius:999px;padding:8px 16px;cursor:pointer}
+.off.on{display:flex}
+.login{position:fixed;inset:0;z-index:20;background:radial-gradient(circle at 30% 20%,#2f9e5b 0,#0b3d22 45%,#05140c 100%);display:flex;align-items:center;justify-content:center;padding:16px}
+.login[hidden]{display:none!important}
+.login .card{width:min(360px,100%);background:rgba(8,20,14,.92);border:1px solid rgba(124,252,154,.25);border-radius:18px;padding:22px 20px;box-shadow:0 16px 40px rgba(0,0,0,.45)}
+.login h1{margin:0 0 6px;font-size:1.25rem;color:#7cfc9a}.login p{margin:0 0 14px;font-size:.85rem;opacity:.85}
+.login label{display:block;font-size:.75rem;margin:8px 0 4px;opacity:.8}
+.login input{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid #345;background:#0b1410;color:#eafff0;padding:10px 12px;font-size:.95rem}
+.login button{width:100%;margin-top:14px;border:0;border-radius:999px;padding:11px;background:#1e8e3e;color:#fff;font-weight:700;cursor:pointer}
+.login .err{color:#ff8a80;font-size:.8rem;min-height:1.2em;margin-top:8px}.off button{border:1px solid #3c6;background:#0b2;color:#fff;border-radius:999px;padding:8px 16px;cursor:pointer}
 .sleep{position:absolute;inset:0;z-index:7;background:radial-gradient(circle at 50% 40%,#1a2744 0,#070b14 70%);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#cde}
 .sleep.on{display:flex}.sleep .zzz{letter-spacing:3px;opacity:.8;animation:zzz 2.2s ease-in-out infinite}
 .sleep button{border:1px solid #7cfc9a;background:#1e8e3e;color:#fff;border-radius:999px;padding:10px 18px;cursor:pointer;font-size:.95rem}
 @keyframes zzz{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-5px);opacity:1}}
 @media (prefers-reduced-motion:reduce){.sleep .zzz{animation:none}}
 </style></head><body>
-<div class="desk">
+<div class="login" data-login>
+  <form class="card" data-loginform autocomplete="on">
+    <h1>🐍 Snake OS Lite</h1>
+    <p>Entra con tu cuenta <b>@dogaemail.com</b> (la misma de Snake OS).</p>
+    <label>Correo</label><input name="email" type="email" required placeholder="tu@dogaemail.com" autocomplete="username">
+    <label>Contraseña</label><input name="password" type="password" required placeholder="Tu contraseña" autocomplete="current-password">
+    <div class="err" data-logerr></div>
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+<div class="desk" hidden data-desk>
   <div class="screen">
     <div class="win" data-w="web"><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🌐 Navegador · Doganiero Search</b></div>
       <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><span style="font-weight:800;color:#ff8a00">DS</span><input data-q placeholder="Buscar en Doganiero Search o pegar una URL" spellcheck="false"></div></div>
@@ -65,12 +83,13 @@
 </div>
 <script>
 (function(){
+  var loginEl=document.querySelector('[data-login]'), deskEl=document.querySelector('[data-desk]');
   var TOK='', page=document.querySelector('[data-page]'), q=document.querySelector('[data-q]'), menu=document.querySelector('[data-menu]'), off=document.querySelector('[data-off]'), sleepEl=document.querySelector('[data-sleep]');
   var IDLE_MS=150000, idleT=null;
   function wake(){ sleepEl.classList.remove('on'); bumpIdle(); }
   function goSleep(){ if(off.classList.contains('on')||sleepEl.classList.contains('on'))return; sleepEl.classList.add('on'); menu.classList.remove('on'); }
   function bumpIdle(){ clearTimeout(idleT); if(sleepEl.classList.contains('on')||off.classList.contains('on'))return; idleT=setTimeout(goSleep, IDLE_MS); }
-  ['pointerdown','keydown','wheel','touchstart','mousemove'].forEach(function(ev){ document.querySelector('.desk').addEventListener(ev, function(){ if(sleepEl.classList.contains('on'))return; bumpIdle(); }, {passive:true, capture:true}); });
+  ['pointerdown','keydown','wheel','touchstart','mousemove'].forEach(function(ev){ (deskEl||document.querySelector('.desk')).addEventListener(ev, function(){ if(sleepEl.classList.contains('on'))return; bumpIdle(); }, {passive:true, capture:true}); });
   sleepEl.querySelector('[data-wake]').onclick=function(e){ e.stopPropagation(); wake(); };
   sleepEl.onclick=function(e){ if(e.target===sleepEl) wake(); };
   bumpIdle();
@@ -111,8 +130,8 @@
     else if(cmd==='clear')term.textContent='';
     else if(cmd==='echo')tlog(a.slice(1).join(' '));
     else if(cmd==='date')tlog(new Date().toString());
-    else if(cmd==='whoami')tlog('guest@snake-os-lite');
-    else if(cmd==='about')tlog('Snake OS Lite · Doganiero Search · sin cuentas');
+    else if(cmd==='whoami')tlog('usuario@snake-os-lite');
+    else if(cmd==='about')tlog('Snake OS Lite · Doganiero Search · cuenta @dogaemail.com');
     else if(cmd==='abrir'||cmd==='ver'){show('web');open(a[1]||'https://es.wikipedia.org');tlog('Abriendo…');}
     else if(cmd==='buscar'){show('web');search(a.slice(1).join(' '));tlog('Buscando…');}
     else tlog('Comando desconocido. Prueba help');};
@@ -126,6 +145,19 @@
       out.srcdoc='<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' \'unsafe-eval\' \'wasm-unsafe-eval\' https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src \'unsafe-inline\'">'+HEAD+'<pre id="o">Cargando Python…\n</pre><script src="'+PYB+'pyodide.js"><\/script><script>'+W+'(async function(){try{var py=await loadPyodide({indexURL:"'+PYB+'",stdout:function(t){w(t)},stderr:function(t){w(t,"e")}});o.textContent="";await py.runPythonAsync('+js+');w("— fin —")}catch(e){w(String(e&&e.message||e),"e")}})();<\/script>';}
     else out.srcdoc='<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' \'unsafe-eval\'; style-src \'unsafe-inline\'">'+HEAD+'<pre id="o"></pre><script>'+W+'var f=function(c){return function(){w(Array.prototype.map.call(arguments,function(a){try{return typeof a==="object"?JSON.stringify(a):String(a)}catch(e){return String(a)}}).join(" "),c)}};console.log=f();console.error=f("e");try{(0,eval)('+js+');w("— fin —")}catch(e){w(String(e),"e")}<\/script>';
   };
-  token().then(()=>document.querySelector('[data-home]').click());
+  function showApp(){ loginEl.hidden=true; deskEl.hidden=false; bumpIdle(); TOK=''; token().then(function(){ document.querySelector('[data-home]').click(); }); }
+  function showLogin(msg){ loginEl.hidden=false; deskEl.hidden=true; var e=document.querySelector('[data-logerr]'); if(e) e.textContent=msg||''; }
+  var lf=document.querySelector('[data-loginform]');
+  if(lf && !lf._wired){ lf._wired=1; lf.onsubmit=function(ev){
+    ev.preventDefault();
+    var fd=new FormData(lf); document.querySelector('[data-logerr]').textContent='Entrando…';
+    fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',
+      body:JSON.stringify({email:fd.get('email'),password:fd.get('password')})})
+      .then(async function(r){ var d=await r.json().catch(function(){return {};}); if(!r.ok) throw new Error((d.detail||d.message||'No se pudo entrar')); return d; })
+      .then(function(){ showApp(); })
+      .catch(function(err){ document.querySelector('[data-logerr]').textContent=err.message||'Error'; });
+  }; }
+  fetch('/api/me',{credentials:'same-origin'}).then(function(r){ if(r.ok) showApp(); else showLogin(''); }).catch(function(){ showLogin(''); });
+
 })();
 </script></body></html>

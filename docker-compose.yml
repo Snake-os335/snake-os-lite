@@ -8,8 +8,11 @@ services:
     volumes:
       - .:/app
       - snakeos-lite-data:/app/data
+      # Misma base de usuarios que Snake OS VP (solo lectura)
+      - snake-os-vp_snakeos-vp-data:/app/vp-data:ro
     environment:
       - PYTHONUNBUFFERED=1
+      - SNAKEOS_VP_DB=/app/vp-data/snakeos.db
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: snake-os-lite-cloudflared
@@ -21,3 +24,5 @@ services:
       - web
 volumes:
   snakeos-lite-data:
+  snake-os-vp_snakeos-vp-data:
+    external: true
