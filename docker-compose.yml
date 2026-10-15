@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    container_name: snake-os-lite
+    restart: unless-stopped
+    ports:
+      - "8990:8000"
+    volumes:
+      - .:/app
+      - snakeos-lite-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: snake-os-lite-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      - web
+volumes:
+  snakeos-lite-data:

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Snake OS Lite</title>
+<link rel="icon" href="/static/dbots-logo.svg">
+<style>
+*{box-sizing:border-box;cursor:auto}html,body,button,a,input,textarea,select{cursor:auto !important}a,button,[role=button]{cursor:pointer !important}input,textarea{cursor:text !important}html,body{margin:0;height:100%;font-family:"Open Sans",system-ui,sans-serif;background:#05140c;color:#fff;overflow:hidden}
+.desk{position:fixed;inset:0;background:radial-gradient(circle at 30% 20%,#2f9e5b 0,#0b3d22 45%,#05140c 100%);display:flex;flex-direction:column}
+.screen{flex:1;min-height:0;position:relative;padding:10px 10px 4px}
+.win{position:absolute;inset:10px;background:#fff;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.4);color:#202124}
+.win[hidden]{display:none!important}
+.tb{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#efefef;font-size:.8rem}
+.tb i{width:10px;height:10px;border-radius:50%;display:inline-block}.tb b{flex:1}
+.tool{display:flex;gap:6px;align-items:center;padding:6px;border-bottom:1px solid #e3e3e3;background:#fff}
+.tool button{width:28px;height:28px;border:0;border-radius:50%;background:#f1f3f4;cursor:pointer}
+.bar-in{flex:1;display:flex;align-items:center;gap:6px;border:1px solid #dfe1e5;border-radius:999px;padding:4px 12px;background:#fff}
+.bar-in input{flex:1;border:0;outline:0;font-size:.85rem;background:transparent}
+.page{flex:1;min-height:0;overflow:auto}.page.live{overflow:hidden}.page iframe{border:0;width:100%;height:100%;display:block}
+.home{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px}
+.logo{font-size:1.8rem;font-weight:800;color:#ff8a00}
+.term{flex:1;background:#0d1117;color:#9f9;font:13px/1.45 ui-monospace,Menlo,monospace;padding:10px;overflow:auto;white-space:pre-wrap}
+.term-in{display:flex;gap:6px;padding:6px;background:#0b1410;border-top:1px solid #222}
+.term-in input{flex:1;background:#111;border:1px solid #333;color:#cfc;border-radius:8px;padding:6px 8px;font:inherit}
+.code-ta{flex:1;border:0;resize:none;background:#0d1117;color:#c9f7d4;font:12px/1.45 ui-monospace,Menlo,monospace;padding:8px}
+.code-out{flex:1;border:0;border-top:1px solid #222;background:#0b1410;min-height:80px}
+.dock{display:flex;align-items:center;gap:4px;padding:6px 8px;background:rgba(10,20,14,.92);flex-shrink:0}
+.dock button{height:28px;padding:0 10px;border:0;border-radius:8px;background:rgba(255,255,255,.08);color:#fff;font-size:.78rem;cursor:pointer}
+.dock button.on{background:rgba(124,252,154,.28)}.clk{margin-left:auto;opacity:.8;font-size:.75rem}
+.menu{position:absolute;left:8px;bottom:8px;z-index:5;width:min(240px,calc(100% - 16px));background:rgba(16,28,20,.97);border-radius:14px;padding:6px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.menu.on{display:block}.menu .hd{padding:6px 8px 8px;font-weight:700;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:4px}
+.menu button{display:flex;width:100%;align-items:center;gap:8px;border:0;background:transparent;color:#fff;padding:8px 10px;border-radius:9px;cursor:pointer;text-align:left;font-size:.85rem}
+.menu button:hover{background:rgba(124,252,154,.18)}.menu hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:4px 0}
+.off{position:absolute;inset:0;z-index:6;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.off.on{display:flex}.off button{border:1px solid #3c6;background:#0b2;color:#fff;border-radius:999px;padding:8px 16px;cursor:pointer}
+</style></head><body>
+<div class="desk">
+  <div class="screen">
+    <div class="win" data-w="web"><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🌐 Navegador · Doganiero Search</b></div>
+      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><span style="font-weight:800;color:#ff8a00">DS</span><input data-q placeholder="Buscar en Doganiero Search o pegar una URL" spellcheck="false"></div></div>
+      <div class="page" data-page></div></div>
+    <div class="win" data-w="term" hidden><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🖥️ Terminal</b></div>
+      <div class="term" data-term>Snake OS Lite 1.0 — escribe help</div>
+      <div class="term-in"><span style="color:#7cfc9a">lite@snake:~$</span><input data-ti autocomplete="off" spellcheck="false"></div></div>
+    <div class="win" data-w="code" hidden><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>💻 Código</b></div>
+      <div class="tool"><select data-lang><option value="js">JavaScript</option><option value="py">Python</option></select><button data-run>▶</button><span style="font-size:.7rem;color:#666;margin-left:auto">Aislado · sin red</span></div>
+      <textarea class="code-ta" data-code spellcheck="false">console.log("Hola desde Snake OS Lite");</textarea>
+      <iframe class="code-out" data-out sandbox="allow-scripts" title="salida"></iframe></div>
+    <div class="menu" data-menu><div class="hd">🐍 Snake OS Lite</div>
+      <button data-m="web">🌐 Navegador</button><button data-m="term">🖥️ Terminal</button><button data-m="code">💻 Código</button>
+      <hr><button data-m="reboot">🔄 Reiniciar</button><button data-m="off">⏻ Apagar</button></div>
+    <div class="off" data-off><div style="font-size:36px">🐍</div><div>Snake OS Lite está apagado</div><button data-on>⏻ Encender</button></div>
+  </div>
+  <div class="dock"><button data-start title="Inicio">🐍</button><button data-app="web" class="on">🌐 Navegador</button><button data-app="term">🖥️ Terminal</button><button data-app="code">💻 Código</button><span class="clk" data-clk></span></div>
+</div>
+<script>
+(function(){
+  var TOK='', page=document.querySelector('[data-page]'), q=document.querySelector('[data-q]'), menu=document.querySelector('[data-menu]'), off=document.querySelector('[data-off]');
+  var frame=null, frameMode='', hist=[];
+  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function tick(){document.querySelector('[data-clk]').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
+  setInterval(tick,20000); tick();
+  function show(w){document.querySelectorAll('.win').forEach(x=>x.hidden=x.getAttribute('data-w')!==w);document.querySelectorAll('.dock [data-app]').forEach(b=>b.classList.toggle('on',b.getAttribute('data-app')===w));menu.classList.remove('on');}
+  document.querySelectorAll('.dock [data-app]').forEach(b=>b.onclick=()=>show(b.getAttribute('data-app')));
+  document.querySelector('[data-start]').onclick=e=>{e.stopPropagation();menu.classList.toggle('on');};
+  document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!e.target.closest('[data-start]'))menu.classList.remove('on');});
+  menu.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{var m=b.getAttribute('data-m');menu.classList.remove('on');if(m==='web'||m==='term'||m==='code')show(m);else if(m==='reboot'){off.classList.add('on');setTimeout(()=>{off.classList.remove('on');home();show('web');},800);}else if(m==='off'){off.classList.add('on');page.innerHTML='';frame=null;}});
+  off.querySelector('[data-on]').onclick=()=>{off.classList.remove('on');home();show('web');};
+  function token(){return TOK?Promise.resolve(TOK):fetch('/api/token',{method:'POST'}).then(r=>r.json()).then(r=>(TOK=r.t));}
+  function setFrame(src,mode){page.classList.add('live');frameMode=mode;page.innerHTML='<iframe sandbox="allow-scripts allow-forms" referrerpolicy="no-referrer" src="'+esc(src)+'"></iframe>';frame=page.querySelector('iframe');}
+  function clearFrame(){page.classList.remove('live');frame=null;frameMode='';}
+  function home(){clearFrame();page.innerHTML='<div class="home"><div class="logo">Doganiero Search</div><div style="color:#5f6368;font-size:.8rem">Snake OS Lite</div></div>';q.value='';}
+  function search(qq){hist.push({t:'q',v:qq});q.value=qq;clearFrame();page.innerHTML='<div style="padding:20px;color:#5f6368">Buscando…</div>';
+    return token().then(t=>setFrame('/api/serp?q='+encodeURIComponent(qq)+'&t='+encodeURIComponent(t),'proxy'));}
+  function open(url){if(!/^https?:\/\//i.test(url))url='https://'+url;hist.push({t:'u',v:url});q.value=url;clearFrame();
+    page.innerHTML='<div style="padding:20px;color:#5f6368">Abriendo…</div>';
+    return fetch('/api/frame-check?u='+encodeURIComponent(url)).then(r=>r.json()).catch(()=>({embeddable:false})).then(fc=>{
+      if(fc&&fc.embeddable){setFrame(url,'direct');return;}
+      return token().then(t=>setFrame('/api/proxy?u='+encodeURIComponent(url)+'&t='+encodeURIComponent(t),'proxy'));
+    });}
+  window.addEventListener('message',e=>{if(!frame||e.source!==frame.contentWindow)return;var m=e.data||{};if(!m.__dbp)return;
+    if(m.type==='open'&&m.url)open(m.url); if(m.type==='nav'&&m.url&&!/^dsearch:/.test(m.url))q.value=m.url;
+    if(m.type==='loaded'&&m.url&&!/^dsearch:/.test(m.url))q.value=m.url;});
+  q.onkeydown=e=>{if(e.key!=='Enter')return;var v=q.value.trim();if(!v)return;if(/^(https?:\/\/|www\.)|^[\w-]+(\.[\w-]+)+\.[a-z]{2,}(\/|$)/i.test(v))open(v);else search(v);};
+  document.querySelector('[data-home]').onclick=()=>{token().then(t=>{clearFrame();setFrame('/api/serp?t='+encodeURIComponent(t),'proxy');q.value='';});};
+  document.querySelector('[data-back]').onclick=()=>{hist.pop();var h=hist.pop();if(!h)return home();if(h.t==='q')search(h.v);else open(h.v);};
+  // terminal
+  var term=document.querySelector('[data-term]'), ti=document.querySelector('[data-ti]');
+  function tlog(s){term.textContent+=(term.textContent.endsWith('\n')?'':'\n')+s;term.scrollTop=term.scrollHeight;}
+  ti.onkeydown=e=>{if(e.key!=='Enter')return;var c=ti.value.trim();ti.value='';if(!c)return;tlog('lite@snake:~$ '+c);
+    var a=c.split(/\s+/),cmd=a[0].toLowerCase();
+    if(cmd==='help')tlog('Comandos: help, clear, echo, date, abrir <url>, buscar <texto>, whoami, about');
+    else if(cmd==='clear')term.textContent='';
+    else if(cmd==='echo')tlog(a.slice(1).join(' '));
+    else if(cmd==='date')tlog(new Date().toString());
+    else if(cmd==='whoami')tlog('guest@snake-os-lite');
+    else if(cmd==='about')tlog('Snake OS Lite · Doganiero Search · sin cuentas');
+    else if(cmd==='abrir'||cmd==='ver'){show('web');open(a[1]||'https://es.wikipedia.org');tlog('Abriendo…');}
+    else if(cmd==='buscar'){show('web');search(a.slice(1).join(' '));tlog('Buscando…');}
+    else tlog('Comando desconocido. Prueba help');};
+  // code
+  document.querySelector('[data-run]').onclick=()=>{
+    var code=document.querySelector('[data-code]').value, lang=document.querySelector('[data-lang]').value, out=document.querySelector('[data-out]');
+    var HEAD='<style>body{margin:0;background:#0b1410;color:#9f9;font:12px/1.45 ui-monospace,Menlo,monospace}pre{margin:0;padding:8px;white-space:pre-wrap}.e{color:#ff8a80}</style>';
+    var W='var o=document.getElementById("o");function w(t,c){var s=document.createElement("span");if(c)s.className=c;s.textContent=t+"\\n";o.appendChild(s);}';
+    var js=JSON.stringify(code).replace(/</g,'\\u003c');
+    if(lang==='py'){var PYB='https://cdn.jsdelivr.net/pyodide/v0.27.7/full/';
+      out.srcdoc='<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' \'unsafe-eval\' \'wasm-unsafe-eval\' https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src \'unsafe-inline\'">'+HEAD+'<pre id="o">Cargando Python…\n</pre><script src="'+PYB+'pyodide.js"><\/script><script>'+W+'(async function(){try{var py=await loadPyodide({indexURL:"'+PYB+'",stdout:function(t){w(t)},stderr:function(t){w(t,"e")}});o.textContent="";await py.runPythonAsync('+js+');w("— fin —")}catch(e){w(String(e&&e.message||e),"e")}})();<\/script>';}
+    else out.srcdoc='<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' \'unsafe-eval\'; style-src \'unsafe-inline\'">'+HEAD+'<pre id="o"></pre><script>'+W+'var f=function(c){return function(){w(Array.prototype.map.call(arguments,function(a){try{return typeof a==="object"?JSON.stringify(a):String(a)}catch(e){return String(a)}}).join(" "),c)}};console.log=f();console.error=f("e");try{(0,eval)('+js+');w("— fin —")}catch(e){w(String(e),"e")}<\/script>';
+  };
+  token().then(()=>document.querySelector('[data-home]').click());
+})();
+</script></body></html>
