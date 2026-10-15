@@ -59,7 +59,7 @@
 <div class="desk" hidden data-desk>
   <div class="screen">
     <div class="win" data-w="web"><div class="tb"><span class="tb-dots"><button type="button" class="tb-close" data-close title="Cerrar" aria-label="Cerrar"></button><button type="button" class="tb-min" title="Minimizar" aria-label="Minimizar" tabindex="-1"></button><button type="button" class="tb-max" title="Ampliar" aria-label="Ampliar" tabindex="-1"></button></span><b>🌐 Navegador</b></div>
-      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><span style="font-size:1.1rem;line-height:1" aria-hidden="true">🐍</span><input data-q placeholder="Buscar o pegar una URL" spellcheck="false"></div></div>
+      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><span style="font-size:1.1rem;line-height:1" aria-hidden="true">🐍</span><input data-q placeholder="Buscar en Doganiero Search o pegar una URL" spellcheck="false"></div></div>
       <div class="page" data-page></div></div>
     <div class="win" data-w="term" hidden><div class="tb"><span class="tb-dots"><button type="button" class="tb-close" data-close title="Cerrar" aria-label="Cerrar"></button><button type="button" class="tb-min" title="Minimizar" aria-label="Minimizar" tabindex="-1"></button><button type="button" class="tb-max" title="Ampliar" aria-label="Ampliar" tabindex="-1"></button></span><b>🖥️ Terminal</b></div>
       <div class="term" data-term>Snake OS Lite 1.0 — escribe help</div>
@@ -74,13 +74,7 @@
       <button data-m="web">🌐 Navegador</button><button data-m="term">🖥️ Terminal</button><button data-m="code">💻 Código</button><button data-m="emoji">😜 Snakemoji</button>
       <hr><button data-m="reboot">🔄 Reiniciar</button><button data-m="off">⏻ Apagar</button></div>
     <div class="off" data-off><div style="font-size:36px">🐍</div><div>Snake OS Lite está apagado</div><button data-on>⏻ Encender</button></div>
-    <div class="sleep" data-sleep>
-      <svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="58" rx="18" ry="4" fill="rgba(0,0,0,.35)"/><path d="M32 8L52 18L32 28L12 18Z" fill="#a9a6f5"/><path d="M12 18L32 28V52L12 42Z" fill="#8b88e0"/><path d="M32 28L52 18V42L32 52Z" fill="#6e6bc4"/><rect x="22" y="33" width="6" height="2.2" rx="1.1" fill="#fff"/><rect x="36" y="33" width="6" height="2.2" rx="1.1" fill="#fff"/></svg>
-      <div class="zzz">Z z z</div>
-      <div style="font-weight:600;font-size:1rem">La computadora está dormida</div>
-      <button data-wake>☀️ Despertar</button>
-    </div>
-  </div>
+</div>
   <div class="dock"><button data-start title="Inicio">🐍</button><button data-app="web" class="on">🌐 Navegador</button><button data-app="term">🖥️ Terminal</button><button data-app="code">💻 Código</button><button data-app="emoji" title="Snakemoji (S)">😜</button><span class="clk" data-clk></span></div>
 </div>
 <script src="/static/snake-emoji-data.js?v=20261015lite"></script>
@@ -88,15 +82,8 @@
 <script>
 (function(){
   var loginEl=document.querySelector('[data-login]'), deskEl=document.querySelector('[data-desk]');
-  var TOK='', page=document.querySelector('[data-page]'), q=document.querySelector('[data-q]'), menu=document.querySelector('[data-menu]'), off=document.querySelector('[data-off]'), sleepEl=document.querySelector('[data-sleep]');
-  var IDLE_MS=150000, idleT=null;
-  function wake(){ sleepEl.classList.remove('on'); bumpIdle(); }
-  function goSleep(){ if(off.classList.contains('on')||sleepEl.classList.contains('on'))return; sleepEl.classList.add('on'); menu.classList.remove('on'); }
-  function bumpIdle(){ clearTimeout(idleT); if(sleepEl.classList.contains('on')||off.classList.contains('on'))return; idleT=setTimeout(goSleep, IDLE_MS); }
-  ['pointerdown','keydown','wheel','touchstart','mousemove'].forEach(function(ev){ (deskEl||document.querySelector('.desk')).addEventListener(ev, function(){ if(sleepEl.classList.contains('on'))return; bumpIdle(); }, {passive:true, capture:true}); });
-  sleepEl.querySelector('[data-wake]').onclick=function(e){ e.stopPropagation(); wake(); };
-  sleepEl.onclick=function(e){ if(e.target===sleepEl) wake(); };
-  bumpIdle();
+  var TOK='', page=document.querySelector('[data-page]'), q=document.querySelector('[data-q]'), menu=document.querySelector('[data-menu]'), off=document.querySelector('[data-off]');
+  // Soft sleep solo en bot mini OS — nunca en Snake OS Lite
   var frame=null, frameMode='', hist=[];
   function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function tick(){document.querySelector('[data-clk]').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
@@ -193,7 +180,7 @@
   function token(){return TOK?Promise.resolve(TOK):fetch('/api/token',{method:'POST'}).then(r=>r.json()).then(r=>(TOK=r.t));}
   function setFrame(src,mode){page.classList.add('live');frameMode=mode;page.innerHTML='<iframe sandbox="allow-scripts allow-forms" referrerpolicy="no-referrer" src="'+esc(src)+'"></iframe>';frame=page.querySelector('iframe');}
   function clearFrame(){page.classList.remove('live');frame=null;frameMode='';}
-  function home(){clearFrame();page.innerHTML='<div class="home"><div style="font-size:4rem;line-height:1">🐍</div><div class="logo" style="color:#1e8e3e">Snake OS Lite</div><div style="color:#5f6368;font-size:.8rem">Busca o pega una URL arriba</div></div>';q.value='';}
+  function home(){clearFrame();page.innerHTML='<div class="home"><div style="font-size:4rem;line-height:1">🐍</div><div class="logo" style="color:#ff8a00">Doganiero Search</div><div style="color:#5f6368;font-size:.8rem">Snake OS Lite · busca o pega una URL</div></div>';q.value='';}
   function search(qq){hist.push({t:'q',v:qq});q.value=qq;clearFrame();page.innerHTML='<div style="padding:20px;color:#5f6368">Buscando…</div>';
     return token().then(t=>setFrame('/api/serp?q='+encodeURIComponent(qq)+'&t='+encodeURIComponent(t),'proxy'));}
   function open(url){if(!/^https?:\/\//i.test(url))url='https://'+url;hist.push({t:'u',v:url});q.value=url;clearFrame();
@@ -232,7 +219,7 @@
       out.srcdoc='<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' \'unsafe-eval\' \'wasm-unsafe-eval\' https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; style-src \'unsafe-inline\'">'+HEAD+'<pre id="o">Cargando Python…\n</pre><script src="'+PYB+'pyodide.js"><\/script><script>'+W+'(async function(){try{var py=await loadPyodide({indexURL:"'+PYB+'",stdout:function(t){w(t)},stderr:function(t){w(t,"e")}});o.textContent="";await py.runPythonAsync('+js+');w("— fin —")}catch(e){w(String(e&&e.message||e),"e")}})();<\/script>';}
     else out.srcdoc='<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\' \'unsafe-eval\'; style-src \'unsafe-inline\'">'+HEAD+'<pre id="o"></pre><script>'+W+'var f=function(c){return function(){w(Array.prototype.map.call(arguments,function(a){try{return typeof a==="object"?JSON.stringify(a):String(a)}catch(e){return String(a)}}).join(" "),c)}};console.log=f();console.error=f("e");try{(0,eval)('+js+');w("— fin —")}catch(e){w(String(e),"e")}<\/script>';
   };
-  function showApp(){ loginEl.hidden=true; deskEl.hidden=false; bumpIdle(); TOK=''; token().then(function(){ document.querySelector('[data-home]').click(); }); }
+  function showApp(){ loginEl.hidden=true; deskEl.hidden=false; TOK=''; token().then(function(){ document.querySelector('[data-home]').click(); }); }
   function showLogin(msg){ loginEl.hidden=false; deskEl.hidden=true; var e=document.querySelector('[data-logerr]'); if(e) e.textContent=msg||''; }
   var lf=document.querySelector('[data-loginform]');
   if(lf && !lf._wired){ lf._wired=1; lf.onsubmit=function(ev){
