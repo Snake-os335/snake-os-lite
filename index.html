@@ -2,14 +2,14 @@
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Snake OS Lite</title>
-<link rel="icon" type="image/png" href="/static/doganiero-search-logo.png?v=20261015d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ctext y=%2750%27 font-size=%2748%27%3E%F0%9F%90%8D%3C/text%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box;cursor:auto}html,body,button,a,input,textarea,select{cursor:auto !important}a,button,[role=button]{cursor:pointer !important}input,textarea{cursor:text !important}html,body{margin:0;height:100%;font-family:"Open Sans",system-ui,sans-serif;background:#05140c;color:#fff;overflow:hidden}
 .desk{position:fixed;inset:0;background:radial-gradient(circle at 30% 20%,#2f9e5b 0,#0b3d22 45%,#05140c 100%);display:flex;flex-direction:column}
 .screen{flex:1;min-height:0;position:relative;padding:10px 10px 4px}
 .win{position:absolute;inset:10px;background:#fff;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.4);color:#202124}
 .win[hidden]{display:none!important}
-.tb{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#efefef;font-size:.8rem}
+.tb{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#efefef;font-size:.8rem}.tb .tb-dots{display:inline-flex;gap:6px;align-items:center}.tb .tb-close,.tb .tb-min,.tb .tb-max{width:12px;height:12px;border-radius:50%;border:0;padding:0;cursor:pointer;display:inline-block}.tb .tb-close{background:#ff5f57}.tb .tb-min{background:#febc2e}.tb .tb-max{background:#28c840}.tb .tb-close:hover{filter:brightness(.9)}.desk-empty{position:absolute;inset:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.75);font-size:.95rem;text-align:center;pointer-events:none}.smj-lite{position:absolute;inset:10px;background:#0b1410;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;color:#eafff0;box-shadow:0 10px 30px rgba(0,0,0,.4)}.smj-lite[hidden]{display:none!important}
 .tb i{width:10px;height:10px;border-radius:50%;display:inline-block}.tb b{flex:1}
 .tool{display:flex;gap:6px;align-items:center;padding:6px;border-bottom:1px solid #e3e3e3;background:#fff}
 .tool button{width:28px;height:28px;border:0;border-radius:50%;background:#f1f3f4;cursor:pointer}
@@ -58,18 +58,20 @@
 </div>
 <div class="desk" hidden data-desk>
   <div class="screen">
-    <div class="win" data-w="web"><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🌐 Navegador · Doganiero Search</b></div>
-      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><img src="/static/doganiero-search-logo.png?v=20261015d" alt="" width="22" height="22" style="border-radius:5px;flex:none"><input data-q placeholder="Buscar en Doganiero Search o pegar una URL" spellcheck="false"></div></div>
+    <div class="win" data-w="web"><div class="tb"><span class="tb-dots"><button type="button" class="tb-close" data-close title="Cerrar" aria-label="Cerrar"></button><button type="button" class="tb-min" title="Minimizar" aria-label="Minimizar" tabindex="-1"></button><button type="button" class="tb-max" title="Ampliar" aria-label="Ampliar" tabindex="-1"></button></span><b>🌐 Navegador</b></div>
+      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><span style="font-size:1.1rem;line-height:1" aria-hidden="true">🐍</span><input data-q placeholder="Buscar o pegar una URL" spellcheck="false"></div></div>
       <div class="page" data-page></div></div>
-    <div class="win" data-w="term" hidden><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🖥️ Terminal</b></div>
+    <div class="win" data-w="term" hidden><div class="tb"><span class="tb-dots"><button type="button" class="tb-close" data-close title="Cerrar" aria-label="Cerrar"></button><button type="button" class="tb-min" title="Minimizar" aria-label="Minimizar" tabindex="-1"></button><button type="button" class="tb-max" title="Ampliar" aria-label="Ampliar" tabindex="-1"></button></span><b>🖥️ Terminal</b></div>
       <div class="term" data-term>Snake OS Lite 1.0 — escribe help</div>
       <div class="term-in"><span style="color:#7cfc9a">lite@snake:~$</span><input data-ti autocomplete="off" spellcheck="false"></div></div>
-    <div class="win" data-w="code" hidden><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>💻 Código</b></div>
+    <div class="win" data-w="code" hidden><div class="tb"><span class="tb-dots"><button type="button" class="tb-close" data-close title="Cerrar" aria-label="Cerrar"></button><button type="button" class="tb-min" title="Minimizar" aria-label="Minimizar" tabindex="-1"></button><button type="button" class="tb-max" title="Ampliar" aria-label="Ampliar" tabindex="-1"></button></span><b>💻 Código</b></div>
       <div class="tool"><select data-lang><option value="js">JavaScript</option><option value="py">Python</option></select><button data-run>▶</button><span style="font-size:.7rem;color:#666;margin-left:auto">Aislado · sin red</span></div>
       <textarea class="code-ta" data-code spellcheck="false">console.log("Hola desde Snake OS Lite");</textarea>
       <iframe class="code-out" data-out sandbox="allow-scripts" title="salida"></iframe></div>
-    <div class="menu" data-menu><div class="hd">🐍 Snake OS Lite</div>
-      <button data-m="web">🌐 Navegador</button><button data-m="term">🖥️ Terminal</button><button data-m="code">💻 Código</button>
+    <div class="win" data-w="emoji" hidden><div class="tb"><span class="tb-dots"><button type="button" class="tb-close" data-close title="Cerrar" aria-label="Cerrar"></button><button type="button" class="tb-min" title="Minimizar" aria-label="Minimizar" tabindex="-1"></button><button type="button" class="tb-max" title="Ampliar" aria-label="Ampliar" tabindex="-1"></button></span><b>😜 Snakemoji</b></div><div class="smj-host" data-smjhost style="flex:1;min-height:0;overflow:auto;background:#0b1410"></div></div>
+<div class="desk-empty" data-empty hidden>🐍 Snake OS Lite<br><span style="opacity:.75;font-size:.85rem">Abre una app desde el muelle o el menú 🐍</span></div>
+<div class="menu" data-menu><div class="hd">🐍 Snake OS Lite</div>
+      <button data-m="web">🌐 Navegador</button><button data-m="term">🖥️ Terminal</button><button data-m="code">💻 Código</button><button data-m="emoji">😜 Snakemoji</button>
       <hr><button data-m="reboot">🔄 Reiniciar</button><button data-m="off">⏻ Apagar</button></div>
     <div class="off" data-off><div style="font-size:36px">🐍</div><div>Snake OS Lite está apagado</div><button data-on>⏻ Encender</button></div>
     <div class="sleep" data-sleep>
@@ -79,8 +81,10 @@
       <button data-wake>☀️ Despertar</button>
     </div>
   </div>
-  <div class="dock"><button data-start title="Inicio">🐍</button><button data-app="web" class="on">🌐 Navegador</button><button data-app="term">🖥️ Terminal</button><button data-app="code">💻 Código</button><span class="clk" data-clk></span></div>
+  <div class="dock"><button data-start title="Inicio">🐍</button><button data-app="web" class="on">🌐 Navegador</button><button data-app="term">🖥️ Terminal</button><button data-app="code">💻 Código</button><button data-app="emoji" title="Snakemoji (S)">😜</button><span class="clk" data-clk></span></div>
 </div>
+<script src="/static/snake-emoji-data.js?v=20261015lite"></script>
+<script src="/static/snake-emoji.js?v=20261015lite"></script>
 <script>
 (function(){
   var loginEl=document.querySelector('[data-login]'), deskEl=document.querySelector('[data-desk]');
@@ -97,16 +101,99 @@
   function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function tick(){document.querySelector('[data-clk]').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
   setInterval(tick,20000); tick();
-  function show(w){document.querySelectorAll('.win').forEach(x=>x.hidden=x.getAttribute('data-w')!==w);document.querySelectorAll('.dock [data-app]').forEach(b=>b.classList.toggle('on',b.getAttribute('data-app')===w));menu.classList.remove('on');}
-  document.querySelectorAll('.dock [data-app]').forEach(b=>b.onclick=()=>show(b.getAttribute('data-app')));
+  var emptyEl=document.querySelector('[data-empty]');
+  function anyWinOpen(){return Array.prototype.some.call(document.querySelectorAll('.win'),function(x){return !x.hidden;});}
+  function syncEmpty(){ if(emptyEl) emptyEl.hidden=anyWinOpen(); }
+  function show(w){
+    document.querySelectorAll('.win').forEach(function(x){ x.hidden=x.getAttribute('data-w')!==w; });
+    document.querySelectorAll('.dock [data-app]').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-app')===w); });
+    menu.classList.remove('on');
+    syncEmpty();
+    if(w==='emoji') mountSnakemoji();
+  }
+  function closeWin(w){
+    var el=document.querySelector('.win[data-w="'+w+'"]');
+    if(el) el.hidden=true;
+    var btn=document.querySelector('.dock [data-app="'+w+'"]');
+    if(btn) btn.classList.remove('on');
+    syncEmpty();
+  }
+  function closeAll(){
+    document.querySelectorAll('.win').forEach(function(x){ x.hidden=true; });
+    document.querySelectorAll('.dock [data-app]').forEach(function(b){ b.classList.remove('on'); });
+    syncEmpty();
+  }
+  document.querySelectorAll('.dock [data-app]').forEach(function(b){
+    b.onclick=function(){
+      var id=b.getAttribute('data-app');
+      var win=document.querySelector('.win[data-w="'+id+'"]');
+      // segundo clic en dock activo = cerrar
+      if(win && !win.hidden && b.classList.contains('on')){ closeWin(id); return; }
+      show(id);
+    };
+  });
+  document.querySelectorAll('.win [data-close]').forEach(function(btn){
+    btn.onclick=function(e){
+      e.preventDefault(); e.stopPropagation();
+      var win=btn.closest('.win');
+      if(!win) return;
+      closeWin(win.getAttribute('data-w'));
+    };
+  });
+  function mountSnakemoji(){
+    var host=document.querySelector('[data-smjhost]');
+    if(!host || host.getAttribute('data-ready')) return;
+    host.setAttribute('data-ready','1');
+    try{
+      if(window.snakeEmoji && window.snakeEmoji.renderApp){ window.snakeEmoji.renderApp(host); return; }
+    }catch(e){}
+    // Fallback: inline gallery using __SNK_EMOJI_DATA
+    var DATA=(window.__SNK_EMOJI_DATA||[]).slice();
+    var BASE='/static/assets/snk-emoji-';
+    host.innerHTML='<div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box">'
+      +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.4rem">😜</span><b>Snakemoji</b><span style="opacity:.7;font-size:.8rem">'+(DATA.length)+' snakemojis</span></div>'
+      +'<input data-smjq type="search" placeholder="Buscar emoji…" style="width:100%;box-sizing:border-box;border-radius:10px;border:1px solid #345;background:#111;color:#eafff0;padding:8px 10px">'
+      +'<div data-smjgrid style="flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px"></div>'
+      +'<div style="opacity:.65;font-size:.75rem">Toca para copiar · tecla S</div></div>';
+    var grid=host.querySelector('[data-smjgrid]'), q=host.querySelector('[data-smjq]');
+    function fold(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+    function paint(){
+      var qq=fold(q.value); grid.innerHTML='';
+      var n=0;
+      DATA.forEach(function(d){
+        if(!d||!d[0]) return;
+        if(qq && fold(d[1]+' '+(d[2]||'')).indexOf(qq)<0 && d[0]!==q.value.trim()) return;
+        if(n++>400 && qq==='') return; // cap initial paint; search shows all matches
+        var b=document.createElement('button');
+        b.type='button'; b.title=(d[1]||'')+' · copiar';
+        b.style.cssText='border:0;background:rgba(255,255,255,.06);border-radius:10px;padding:6px;cursor:pointer;color:#fff';
+        var im=document.createElement('img'); im.src=BASE+d[3]+'.svg'; im.alt=d[0]; im.width=36; im.height=36; im.loading='lazy';
+        b.appendChild(im);
+        b.onclick=function(){ try{navigator.clipboard.writeText(d[0]);}catch(e){} b.style.outline='2px solid #7cfc9a'; setTimeout(function(){b.style.outline='';},400); };
+        grid.appendChild(b);
+      });
+    }
+    var t=null; q.oninput=function(){ clearTimeout(t); t=setTimeout(paint,80); }; paint();
+  }
+  // Tecla S → Snakemoji (fuera de inputs)
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='s' && e.key!=='S') return;
+    if(e.ctrlKey||e.altKey||e.metaKey||e.shiftKey||e.repeat||e.isComposing) return;
+    var t=e.target; if(!t) return;
+    var tag=(t.nodeName||'').toUpperCase();
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||t.isContentEditable) return;
+    if(loginEl && !loginEl.hidden) return;
+    e.preventDefault(); show('emoji');
+  });
+
   document.querySelector('[data-start]').onclick=e=>{e.stopPropagation();menu.classList.toggle('on');};
   document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!e.target.closest('[data-start]'))menu.classList.remove('on');});
-  menu.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{var m=b.getAttribute('data-m');menu.classList.remove('on');if(m==='web'||m==='term'||m==='code')show(m);else if(m==='reboot'){off.classList.add('on');setTimeout(()=>{off.classList.remove('on');home();show('web');},800);}else if(m==='off'){off.classList.add('on');page.innerHTML='';frame=null;}});
+  menu.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{var m=b.getAttribute('data-m');menu.classList.remove('on');if(m==='web'||m==='term'||m==='code'||m==='emoji')show(m);else if(m==='reboot'){off.classList.add('on');setTimeout(()=>{off.classList.remove('on');home();show('web');},800);}else if(m==='off'){off.classList.add('on');page.innerHTML='';frame=null;}});
   off.querySelector('[data-on]').onclick=()=>{off.classList.remove('on');home();show('web');};
   function token(){return TOK?Promise.resolve(TOK):fetch('/api/token',{method:'POST'}).then(r=>r.json()).then(r=>(TOK=r.t));}
   function setFrame(src,mode){page.classList.add('live');frameMode=mode;page.innerHTML='<iframe sandbox="allow-scripts allow-forms" referrerpolicy="no-referrer" src="'+esc(src)+'"></iframe>';frame=page.querySelector('iframe');}
   function clearFrame(){page.classList.remove('live');frame=null;frameMode='';}
-  function home(){clearFrame();page.innerHTML='<div class="home"><img src="/static/doganiero-search-logo.png?v=20261015d" alt="Doganiero Search" width="96" height="96" style="border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.15)"><div class="logo">Doganiero Search</div><div style="color:#5f6368;font-size:.8rem">Snake OS Lite</div></div>';q.value='';}
+  function home(){clearFrame();page.innerHTML='<div class="home"><div style="font-size:4rem;line-height:1">🐍</div><div class="logo" style="color:#1e8e3e">Snake OS Lite</div><div style="color:#5f6368;font-size:.8rem">Busca o pega una URL arriba</div></div>';q.value='';}
   function search(qq){hist.push({t:'q',v:qq});q.value=qq;clearFrame();page.innerHTML='<div style="padding:20px;color:#5f6368">Buscando…</div>';
     return token().then(t=>setFrame('/api/serp?q='+encodeURIComponent(qq)+'&t='+encodeURIComponent(t),'proxy'));}
   function open(url){if(!/^https?:\/\//i.test(url))url='https://'+url;hist.push({t:'u',v:url});q.value=url;clearFrame();
@@ -131,7 +218,7 @@
     else if(cmd==='echo')tlog(a.slice(1).join(' '));
     else if(cmd==='date')tlog(new Date().toString());
     else if(cmd==='whoami')tlog('usuario@snake-os-lite');
-    else if(cmd==='about')tlog('Snake OS Lite · Doganiero Search · cuenta @dogaemail.com');
+    else if(cmd==='about')tlog('Snake OS Lite · cuenta @dogaemail.com');
     else if(cmd==='abrir'||cmd==='ver'){show('web');open(a[1]||'https://es.wikipedia.org');tlog('Abriendo…');}
     else if(cmd==='buscar'){show('web');search(a.slice(1).join(' '));tlog('Buscando…');}
     else tlog('Comando desconocido. Prueba help');};

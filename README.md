@@ -1,22 +1,21 @@
 # Snake OS Lite
 
-Mini escritorio web con **Doganiero Search**. Login obligatorio con cuentas existentes `@dogaemail.com` (misma base que Snake OS VP, montada en solo lectura).
+Mini escritorio web 🐍 con búsqueda, terminal, código y **Snakemoji** (~5000 emojis Snake OS; tecla **S**).
+
+Login con cuentas existentes `@dogaemail.com` (misma base que Snake OS VP, solo lectura).
 
 ## Local
 
 ```bash
-cp .env.example .env   # TUNNEL_TOKEN opcional
+cp .env.example .env
 docker compose up -d --build
 # http://127.0.0.1:8990
 ```
 
-## Dominio público
+## Público
 
-Hostname previsto: `snake-os-lite.softportweb.com`
+https://snake-os-lite.softportweb.com/
 
-1. Crear túnel Cloudflare y poner `TUNNEL_TOKEN=...` en `.env`
-2. `docker compose up -d`
+## Nota
 
-## GitHub
-
-Repo previsto: `Snake-os335/snake-os-lite` (hay que crear el repo vacío en GitHub y luego `git push -u origin main`).
+Los SVG de Snakemoji viven en `static/assets/snk-emoji-*.svg`. El logo de Doganiero Search **no** se usa aquí (solo en snake-os-vp).
