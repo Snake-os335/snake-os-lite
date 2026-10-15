@@ -201,17 +201,17 @@ def _serp_html(origin: str, tok: str, q: str, page: int, res: list[dict[str, str
     css = ("body{margin:0;font-family:arial,system-ui,sans-serif;color:#202124;background:#fff}"
            ".top{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #ebebeb;position:sticky;top:0;background:#fff;z-index:2}"
            ".lg{font-weight:800;font-size:1.15rem;letter-spacing:-.5px;color:#ff8a00}.lg b{color:#ff8a00}"
-           "form{flex:1;max-width:560px}input{width:100%;box-sizing:border-box;border:1px solid #dfe1e5;border-radius:24px;padding:9px 16px;font-size:15px;box-shadow:0 1px 6px rgba(32,33,36,.18);outline:0}"
+           "form{flex:1;max-width:640px;display:flex;gap:8px;align-items:center}input[name=q]{flex:1;min-width:0;box-sizing:border-box;border:1px solid #dfe1e5;border-radius:24px;padding:9px 16px;font-size:15px;box-shadow:0 1px 6px rgba(32,33,36,.18);outline:0}button.go,button[type=submit]{flex:none;cursor:pointer;pointer-events:auto;border:0;border-radius:24px;padding:9px 18px;font-size:14px;font-weight:700;color:#fff;background:#ff8a00}button.go:hover{background:#e67a00}"
            ".st{color:#70757a;font-size:13px;padding:10px 16px 0}.w{padding:4px 16px 20px;max-width:680px}"
            ".r{margin:18px 0}.s{display:flex;gap:10px;align-items:center}.s img{width:18px;height:18px;border-radius:50%;background:#f1f3f4;padding:4px}"
            ".d{font-size:14px}.u{font-size:12px;color:#4d5156;max-width:520px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}"
            ".r>a{display:inline-block;margin-top:4px;font-size:19px;color:#1a0dab;text-decoration:none}.r>a:hover{text-decoration:underline}.r p{margin:3px 0 0;font-size:14px;line-height:1.55;color:#4d5156}"
            ".pg{display:flex;gap:6px;flex-wrap:wrap;padding:8px 16px 30px}.pg a{padding:6px 11px;border-radius:8px;color:#1a0dab;text-decoration:none}.pg a.on{background:#fff3e0;color:#e65100;font-weight:700}"
            ".home{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:14px;padding:24px}.home .lg{font-size:2.4rem}.home form{width:min(560px,100%)}.hint{color:#70757a;font-size:13px}")
-    head = f"<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>{e(q)+' · ' if q else ''}Doganiero Search</title><script>window.__DBP={cfg};</script><script src=\"{origin}/static/dbots-proxy-helper.js?v=1\"></script><style>{css}</style></head><body>"
+    head = f"<!doctype html><html><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>{e(q)+' · ' if q else ''}Doganiero Search</title><link rel=icon type=image/png href=\"{origin}/static/doganiero-search-logo.png?v=20261015d\"><script>window.__DBP={cfg};</script><script src=\"{origin}/static/dbots-proxy-helper.js?v=20261015e\"></script><style>{css}</style></head><body>"
     if not q:
-        return head + f'<div class="home"><div class="lg"><b>Doganiero Search</b></div><form data-serpform action="{origin}/api/serp" method="get"><input name="q" placeholder="Buscar en Doganiero Search…" autofocus><input type="hidden" name="t" value="{e(tok)}"></form><div class="hint">Resultados de muchos sitios</div></div></body></html>'
-    return head + f'<div class="top"><div class="lg"><b>Doganiero Search</b></div><form data-serpform action="{origin}/api/serp" method="get"><input name="q" value="{e(q)}" placeholder="Buscar en Doganiero Search…"><input type="hidden" name="t" value="{e(tok)}"></form></div><div class="st">Página {page} · {len(res)} resultados de {len({r["domain"] for r in res})} sitios</div><div class="w">{items or "<p>Sin resultados.</p>"}</div><div class="pg">{nav}{nxt}</div></body></html>'
+        return head + f'<div class="home"><div class="lg"><img src="{origin}/static/doganiero-search-logo.png?v=20261015d" alt=""><b>Doganiero Search</b></div><form data-serpform action="{origin}/api/serp" method="get"><input name="q" placeholder="Buscar en Doganiero Search…" autofocus autocomplete="off"><input type="hidden" name="t" value="{e(tok)}"><button type="submit" class="go" data-serpgo>Buscar</button></form><div class="hint">Resultados de muchos sitios</div></div></body></html>'
+    return head + f'<div class="top"><div class="lg"><img src="{origin}/static/doganiero-search-logo.png?v=20261015d" alt=""><b>Doganiero Search</b></div><form data-serpform action="{origin}/api/serp" method="get"><input name="q" value="{e(q)}" placeholder="Buscar en Doganiero Search…" autocomplete="off"><input type="hidden" name="t" value="{e(tok)}"><button type="submit" class="go" data-serpgo>Buscar</button></form></div><div class="st">Página {page} · {len(res)} resultados de {len({r["domain"] for r in res})} sitios</div><div class="w">{items or "<p>Sin resultados.</p>"}</div><div class="pg">{nav}{nxt}</div></body></html>'
 
 def _fetch_raw(url: str) -> tuple[str, str, bytes]:
     _check_host(url)
@@ -244,14 +244,14 @@ def _proxy_doc(origin: str, tok: str, final: str, page: str) -> str:
     page = re.sub(r"<meta[^>]+http-equiv=[\"']?(content-security-policy|x-frame-options|refresh|set-cookie)[^>]*>", "", page, flags=re.I)
     page = re.sub(r"<base\b[^>]*>", "", page, flags=re.I)
     cfg = json.dumps({"p": origin + "/api/proxy", "t": tok, "u": final, "o": origin})
-    inject = f'<base href="{_html.escape(final, quote=True)}"><script>window.__DBP={cfg};</script><script src="{origin}/static/dbots-proxy-helper.js?v=1"></script>'
+    inject = f'<base href="{_html.escape(final, quote=True)}"><script>window.__DBP={cfg};</script><script src="{origin}/static/dbots-proxy-helper.js?v=20261015e"></script>'
     m = re.search(r"<head\b[^>]*>", page, re.I)
     return page[:m.end()] + inject + page[m.end():] if m else f"<!doctype html><html><head>{inject}</head><body>{page}</body></html>"
 
 def _proxy_error(origin: str, msg: str, url: str) -> str:
     cfg = json.dumps({"p": origin + "/api/proxy", "t": "", "u": url, "o": origin, "error": msg})
     return (f"<!doctype html><html><head><meta charset=utf-8><script>window.__DBP={cfg};</script>"
-            f'<script src="{origin}/static/dbots-proxy-helper.js?v=1"></script></head>'
+            f'<script src="{origin}/static/dbots-proxy-helper.js?v=20261015e"></script></head>'
             f'<body style="font-family:system-ui;padding:24px;text-align:center"><p>🚧 {_html.escape(msg)}</p></body></html>')
 
 app = FastAPI(title="Snake OS Lite")
@@ -349,7 +349,12 @@ def frame_check(u: str = Query("", max_length=2000), user=Depends(require_user))
     return {"ok": True, "embeddable": not blocked, "final": final}
 
 @app.get("/")
-def index():
-    return FileResponse(ROOT / "index.html")
+def index(request: Request, response: Response):
+    # No auto-reanudar: invalidar sesión en cada carga completa.
+    end_session(request.cookies.get(COOKIE_NAME))
+    response = FileResponse(ROOT / "index.html")
+    response.delete_cookie(COOKIE_NAME, path="/")
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return response
 
 app.mount("/static", StaticFiles(directory=str(ROOT / "static")), name="static")

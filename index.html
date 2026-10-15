@@ -2,7 +2,7 @@
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Snake OS Lite</title>
-<link rel="icon" href="/static/dbots-logo.svg">
+<link rel="icon" type="image/png" href="/static/doganiero-search-logo.png?v=20261015d">
 <style>
 *{box-sizing:border-box;cursor:auto}html,body,button,a,input,textarea,select{cursor:auto !important}a,button,[role=button]{cursor:pointer !important}input,textarea{cursor:text !important}html,body{margin:0;height:100%;font-family:"Open Sans",system-ui,sans-serif;background:#05140c;color:#fff;overflow:hidden}
 .desk{position:fixed;inset:0;background:radial-gradient(circle at 30% 20%,#2f9e5b 0,#0b3d22 45%,#05140c 100%);display:flex;flex-direction:column}
@@ -59,7 +59,7 @@
 <div class="desk" hidden data-desk>
   <div class="screen">
     <div class="win" data-w="web"><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🌐 Navegador · Doganiero Search</b></div>
-      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><span style="font-weight:800;color:#ff8a00">DS</span><input data-q placeholder="Buscar en Doganiero Search o pegar una URL" spellcheck="false"></div></div>
+      <div class="tool"><button data-back>◀</button><button data-home>⌂</button><div class="bar-in"><img src="/static/doganiero-search-logo.png?v=20261015d" alt="" width="22" height="22" style="border-radius:5px;flex:none"><input data-q placeholder="Buscar en Doganiero Search o pegar una URL" spellcheck="false"></div></div>
       <div class="page" data-page></div></div>
     <div class="win" data-w="term" hidden><div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><b>🖥️ Terminal</b></div>
       <div class="term" data-term>Snake OS Lite 1.0 — escribe help</div>
@@ -106,7 +106,7 @@
   function token(){return TOK?Promise.resolve(TOK):fetch('/api/token',{method:'POST'}).then(r=>r.json()).then(r=>(TOK=r.t));}
   function setFrame(src,mode){page.classList.add('live');frameMode=mode;page.innerHTML='<iframe sandbox="allow-scripts allow-forms" referrerpolicy="no-referrer" src="'+esc(src)+'"></iframe>';frame=page.querySelector('iframe');}
   function clearFrame(){page.classList.remove('live');frame=null;frameMode='';}
-  function home(){clearFrame();page.innerHTML='<div class="home"><div class="logo">Doganiero Search</div><div style="color:#5f6368;font-size:.8rem">Snake OS Lite</div></div>';q.value='';}
+  function home(){clearFrame();page.innerHTML='<div class="home"><img src="/static/doganiero-search-logo.png?v=20261015d" alt="Doganiero Search" width="96" height="96" style="border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.15)"><div class="logo">Doganiero Search</div><div style="color:#5f6368;font-size:.8rem">Snake OS Lite</div></div>';q.value='';}
   function search(qq){hist.push({t:'q',v:qq});q.value=qq;clearFrame();page.innerHTML='<div style="padding:20px;color:#5f6368">Buscando…</div>';
     return token().then(t=>setFrame('/api/serp?q='+encodeURIComponent(qq)+'&t='+encodeURIComponent(t),'proxy'));}
   function open(url){if(!/^https?:\/\//i.test(url))url='https://'+url;hist.push({t:'u',v:url});q.value=url;clearFrame();
@@ -157,7 +157,8 @@
       .then(function(){ showApp(); })
       .catch(function(err){ document.querySelector('[data-logerr]').textContent=err.message||'Error'; });
   }; }
-  fetch('/api/me',{credentials:'same-origin'}).then(function(r){ if(r.ok) showApp(); else showLogin(''); }).catch(function(){ showLogin(''); });
+  // Siempre pedir login: no reanudar sesión aunque quede cookie.
+  fetch('/api/logout',{method:'POST',credentials:'same-origin'}).catch(function(){}).finally(function(){ showLogin(''); });
 
 })();
 </script></body></html>
